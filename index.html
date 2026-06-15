@@ -1,1207 +1,537 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Carpus Jospin — Développeur Full Stack</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg0:#05080f;--bg1:#080d18;--bg2:#0c1220;--bg3:#101828;
+  --surface:#141e30;--surface2:#1a2540;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--border3:rgba(64,160,255,0.25);
+  --blue:#3b9eff;--blue2:#6bbdff;--blue-dim:rgba(59,158,255,0.12);--blue-dim2:rgba(59,158,255,0.07);
+  --gold:#f0b429;--gold-dim:rgba(240,180,41,0.1);
+  --green:#34d399;--green-dim:rgba(52,211,153,0.1);
+  --text:#e8edf5;--text2:#9aadc8;--text3:#5d7190;
+  --r:10px;--r2:16px;--r3:24px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg0);color:var(--text);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg1)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:3px}
 
-  :root {
-    --bg: #080c14;
-    --bg2: #0d1321;
-    --bg3: #111827;
-    --card: #131c2e;
-    --border: rgba(99,179,237,0.12);
-    --border2: rgba(99,179,237,0.22);
-    --accent: #38bdf8;
-    --accent2: #818cf8;
-    --accent3: #34d399;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --muted2: #64748b;
-    --radius: 12px;
-    --radius-lg: 20px;
-  }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1.5rem,5vw,4rem);background:rgba(5,8,15,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.logo{font-size:1.1rem;font-weight:800;letter-spacing:-0.03em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 12px var(--blue)}
+.nav-links{display:flex;gap:0.2rem;list-style:none;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:5px}
+.nav-links a{display:block;padding:0.35rem 0.9rem;color:var(--text2);font-size:0.8rem;font-weight:500;text-decoration:none;border-radius:100px;transition:all 0.2s}
+.nav-links a:hover,.nav-links a.active{background:var(--blue-dim2);color:var(--blue)}
+.nav-cta{background:var(--blue)!important;color:#05080f!important;font-weight:700!important}
+.nav-cta:hover{opacity:0.85!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;border:none;background:none;padding:4px}
+.hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
 
-  html { scroll-behavior: smooth; }
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;padding:100px clamp(1.5rem,8vw,6rem) 4rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 80% 35%,rgba(59,158,255,0.09) 0%,transparent 65%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(52,211,153,0.05) 0%,transparent 60%)}
+.hero-grid-bg{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.013) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.013) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%)}
+.hero-inner{max-width:1140px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr auto;gap:4rem;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:1.5rem;font-size:0.73rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
+.hero-eyebrow::before{content:'';width:22px;height:1px;background:var(--blue)}
+h1.hero-h1{font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.0;letter-spacing:-0.04em;margin-bottom:1.25rem}
+h1.hero-h1 .ghost{color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,0.22)}
+.hero-role{font-size:clamp(0.95rem,2vw,1.15rem);color:var(--text2);margin-bottom:1.75rem;font-weight:400;min-height:2rem}
+.typed-w{color:var(--blue);font-family:'JetBrains Mono',monospace;font-weight:500}
+.cur{color:var(--blue);animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-desc{font-size:1rem;color:var(--text2);max-width:500px;line-height:1.8;margin-bottom:2.25rem}
+.hero-btns{display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.4rem;border-radius:var(--r);font-size:0.875rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:all 0.22s}
+.btn-blue{background:var(--blue);color:#05080f}
+.btn-blue:hover{opacity:0.88;transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,158,255,0.3)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+.hero-stats{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;width:fit-content}
+.hs{padding:1rem 1.6rem;text-align:center;border-right:1px solid var(--border)}
+.hs:last-child{border-right:none}
+.hs-n{font-size:1.7rem;font-weight:900;letter-spacing:-0.04em;color:var(--blue);display:block;line-height:1;margin-bottom:4px}
+.hs-l{font-size:0.68rem;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* HERO CARD */
+.hero-card{width:270px;flex-shrink:0;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r3);overflow:hidden}
+.hc-top{height:110px;background:linear-gradient(135deg,rgba(59,158,255,0.18),rgba(52,211,153,0.08));position:relative}
+.hc-top::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0.4}
+.hc-avatar{width:82px;height:82px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;font-size:2.2rem;border:3px solid var(--bg1);position:absolute;bottom:-41px;left:50%;transform:translateX(-50%);z-index:2}
+.hc-body{padding:3rem 1.4rem 1.4rem;text-align:center}
+.hc-name{font-size:0.9rem;font-weight:700;margin-bottom:2px}
+.hc-role{font-size:0.75rem;color:var(--blue);font-weight:700;margin-bottom:1rem}
+.hc-div{height:1px;background:var(--border);margin:0.85rem 0}
+.hc-row{display:flex;align-items:center;gap:0.5rem;font-size:0.73rem;color:var(--text2);margin-bottom:0.45rem;text-align:left}
+.hc-row svg{flex-shrink:0;color:var(--blue)}
+.hc-badge{display:inline-flex;align-items:center;gap:5px;margin-top:0.75rem;background:var(--green-dim);border:1px solid rgba(52,211,153,0.2);color:var(--green);font-size:0.68rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:100px;letter-spacing:0.04em}
+.hc-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px var(--green)}50%{box-shadow:0 0 12px var(--green)}}
 
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg2); }
-  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
+/* SECTIONS */
+section{padding:6rem clamp(1.5rem,6vw,4rem)}
+.si{max-width:1140px;margin:0 auto}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--blue-dim2);border:1px solid var(--border3);color:var(--blue);font-size:0.7rem;font-weight:700;padding:0.28rem 0.8rem;border-radius:100px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem}
+h2.st{font-size:clamp(1.9rem,4vw,2.75rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem}
+.ss{color:var(--text2);max-width:520px;margin-bottom:3rem;line-height:1.7}
+.dvd{height:1px;background:linear-gradient(90deg,transparent,var(--border2) 20%,var(--border2) 80%,transparent)}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(8,12,20,0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 max(1.5rem, 5vw);
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
-  }
+/* ABOUT */
+#about{background:var(--bg1)}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.ab p{color:var(--text2);line-height:1.85;margin-bottom:1.1rem;font-size:0.965rem}
+.ab strong{color:var(--text);font-weight:600}
+.ai{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-top:2rem}
+.ai-item{display:flex;align-items:center;gap:0.55rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:0.65rem 0.85rem;font-size:0.78rem;color:var(--text2)}
+.ai-item svg{color:var(--blue);flex-shrink:0}
+.ai-item strong{color:var(--text);font-weight:600;display:block;font-size:0.72rem}
+.af-wrap{display:flex;flex-direction:column;gap:1rem}
+.af{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.35rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;transition:border-color 0.2s,transform 0.2s;position:relative;overflow:hidden}
+.af::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--blue),transparent);border-radius:3px;opacity:0;transition:opacity 0.2s}
+.af:hover{border-color:var(--border3);transform:translateX(4px)}
+.af:hover::before{opacity:1}
+.af-ico{width:42px;height:42px;border-radius:var(--r);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.af-t{font-size:0.875rem;font-weight:700;margin-bottom:0.2rem}
+.af-d{font-size:0.79rem;color:var(--text2);line-height:1.6}
 
-  .nav-brand {
-    font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-decoration: none;
-  }
+/* SKILLS */
+#skills{background:var(--bg2)}
+.sk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem}
+.sk-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.4rem;transition:border-color 0.2s,transform 0.2s}
+.sk-card:hover{border-color:var(--border3);transform:translateY(-3px)}
+.sk-card.wide{grid-column:span 3}
+.sk-head{display:flex;align-items:center;gap:0.7rem;margin-bottom:1.2rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border)}
+.sk-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.95rem}
+.sk-title{font-size:0.85rem;font-weight:700}
+.sk-ct{margin-left:auto;font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--text3)}
+.tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.tag{font-size:0.71rem;font-weight:600;padding:0.26rem 0.62rem;border-radius:6px;border:1px solid;transition:transform 0.15s}
+.tag:hover{transform:translateY(-1px)}
+.tb{background:rgba(59,158,255,0.08);border-color:rgba(59,158,255,0.2);color:#7ac5ff}
+.tg{background:rgba(52,211,153,0.07);border-color:rgba(52,211,153,0.18);color:#5ddbb2}
+.ty{background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.2);color:#f0c060}
+.tr{background:rgba(248,100,100,0.08);border-color:rgba(248,100,100,0.18);color:#f88080}
+.tp{background:rgba(160,100,255,0.08);border-color:rgba(160,100,255,0.18);color:#c090ff}
+.tx{background:rgba(150,170,200,0.06);border-color:rgba(150,170,200,0.12);color:#90a8c0}
+.lang-bar{height:3px;border-radius:3px;background:var(--border);margin-top:4px}
+.lang-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green))}
 
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a {
-    color: var(--muted); font-size: 0.875rem; font-weight: 500;
-    text-decoration: none; transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
-    height: 2px; background: var(--accent); border-radius: 2px;
-    transform: scaleX(0); transition: transform 0.2s;
-  }
-  .nav-links a:hover { color: var(--accent); }
-  .nav-links a:hover::after { transform: scaleX(1); }
+/* EXPERIENCE */
+#experience{background:var(--bg1)}
+.exp-wrap{display:grid;grid-template-columns:200px 1fr;gap:3rem;align-items:start}
+.exp-nav{position:sticky;top:90px}
+.en-item{display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.9rem;border-radius:var(--r);cursor:pointer;transition:all 0.2s;margin-bottom:0.2rem;border:1px solid transparent;font-size:0.8rem;font-weight:600;color:var(--text3)}
+.en-item.active,.en-item:hover{background:var(--blue-dim);border-color:var(--border3);color:var(--blue)}
+.en-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.en-item.active .en-dot{background:var(--blue);box-shadow:0 0 8px var(--blue)}
+.ec{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;display:none;animation:fi 0.3s ease}
+.ec.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ec-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.1rem}
+.ec-title{font-size:1.05rem;font-weight:800;letter-spacing:-0.02em}
+.ec-date{font-size:0.7rem;font-family:'JetBrains Mono',monospace;font-weight:600;background:var(--blue-dim);border:1px solid var(--border3);color:var(--blue);padding:0.25rem 0.65rem;border-radius:100px;white-space:nowrap}
+.ec-co{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--blue);font-weight:700;margin-bottom:1.1rem}
+.ec-tasks{display:flex;flex-direction:column;gap:0.45rem}
+.ec-task{display:flex;gap:0.65rem;align-items:baseline;font-size:0.85rem;color:var(--text2)}
+.tb-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:0.52rem}
 
-  .nav-cta {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #080c14 !important; font-weight: 700 !important;
-    padding: 0.4rem 1rem; border-radius: 8px;
-    transition: opacity 0.2s !important;
-  }
-  .nav-cta:hover { opacity: 0.85; }
-  .nav-cta::after { display: none !important; }
+/* PROJECTS */
+#projects{background:var(--bg2)}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.15rem}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.25s,transform 0.25s;position:relative}
+.pc:hover{border-color:var(--border3);transform:translateY(-5px)}
+.pc-bar{height:3px;background:linear-gradient(90deg,var(--blue),var(--green));opacity:0;transition:opacity 0.25s}
+.pc:hover .pc-bar{opacity:1}
+.pc-in{padding:1.4rem;display:flex;flex-direction:column;flex:1}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.15rem}
+.pc-ico{width:46px;height:46px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.ps{font-size:0.67rem;font-weight:700;padding:0.2rem 0.58rem;border-radius:100px;letter-spacing:0.04em}
+.ps-live{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2)}
+.ps-done{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,158,255,0.18)}
+.pc-n{font-size:0.975rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.18rem}
+.pc-cl{font-size:0.73rem;color:var(--text3);margin-bottom:0.8rem}
+.pc-d{font-size:0.82rem;color:var(--text2);line-height:1.7;flex:1;margin-bottom:1.15rem}
+.pc-s{display:flex;flex-wrap:wrap;gap:0.38rem}
+.pt{font-size:0.67rem;font-weight:600;padding:0.18rem 0.48rem;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text3);font-family:'JetBrains Mono',monospace}
 
-  .hamburger {
-    display: none; flex-direction: column; gap: 5px; cursor: pointer;
-    background: none; border: none; padding: 4px;
-  }
-  .hamburger span {
-    width: 24px; height: 2px; background: var(--text); border-radius: 2px;
-    transition: all 0.3s;
-  }
+/* CERTIFICATIONS */
+#certifications{background:var(--bg1)}
+.cl{display:grid;grid-template-columns:1fr 270px;gap:3rem;align-items:start}
+.cg-wrap{display:flex;flex-direction:column;gap:1.25rem}
+.cg{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.cg-head{display:flex;align-items:center;gap:0.9rem;padding:1.2rem 1.4rem;border-bottom:1px solid var(--border)}
+.cg-logo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.cg-name{font-size:0.875rem;font-weight:800}
+.cg-cnt{font-size:0.73rem;color:var(--text3)}
+.ci-grid{display:grid;grid-template-columns:repeat(2,1fr)}
+.ci{padding:0.85rem 1.4rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.55rem;font-size:0.78rem;color:var(--text2);transition:background 0.15s}
+.ci:hover{background:var(--bg2)}
+.ci:nth-child(even){border-right:none}
+.ci-ch{width:17px;height:17px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.62rem}
+.ci-yr{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:0.66rem;color:var(--text3)}
+.edu-wrap{display:flex;flex-direction:column;gap:0.9rem}
+.edu-c{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.4rem;transition:border-color 0.2s}
+.edu-c:hover{border-color:var(--border3)}
+.edu-ico{font-size:1.7rem;margin-bottom:0.65rem;display:block}
+.edu-deg{font-size:0.875rem;font-weight:700;margin-bottom:0.25rem}
+.edu-sch{font-size:0.76rem;color:var(--blue);font-weight:600}
+.edu-yr{font-size:0.7rem;color:var(--text3);margin-top:0.28rem;font-family:'JetBrains Mono',monospace}
+.pill{display:inline-block;margin-top:0.55rem;font-size:0.66rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:100px;letter-spacing:0.04em}
+.pill-ok{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2)}
+.pill-wip{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(240,180,41,0.2)}
 
-  /* ── HERO ── */
-  #hero {
-    min-height: 100vh; display: flex; align-items: center;
-    padding: 80px max(1.5rem, 8vw) 4rem;
-    position: relative; overflow: hidden;
-  }
+/* CONTACT */
+#contact{background:var(--bg0);position:relative;overflow:hidden}
+#contact::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(59,158,255,0.06) 0%,transparent 70%);pointer-events:none}
+.cc-wrap{max-width:660px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.cc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:2.5rem 0}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1.4rem;text-align:center;text-decoration:none;color:var(--text);transition:border-color 0.22s,transform 0.22s;display:flex;flex-direction:column;align-items:center;gap:0.55rem}
+.cc:hover{border-color:var(--border3);transform:translateY(-4px)}
+.cc-ico{width:44px;height:44px;border-radius:var(--r);background:var(--blue-dim);border:1px solid var(--border3);display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.cc-lbl{font-size:0.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em}
+.cc-val{font-size:0.8rem;font-weight:700;color:var(--blue);word-break:break-all}
 
-  .hero-bg {
-    position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(56,189,248,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(129,140,248,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(52,211,153,0.03) 0%, transparent 70%);
-  }
+/* FOOTER */
+footer{background:var(--bg1);border-top:1px solid var(--border);padding:1.75rem clamp(1.5rem,5vw,4rem);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.fl{font-size:0.8rem;color:var(--text3)}
+.fl strong{color:var(--blue)}
+.fr{display:flex;gap:0.65rem}
+.flink{width:32px;height:32px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);text-decoration:none;font-size:0.72rem;font-weight:700;transition:all 0.2s}
+.flink:hover{border-color:var(--blue);color:var(--blue)}
 
-  .hero-grid {
-    display: grid; grid-template-columns: 1fr auto;
-    gap: 3rem; align-items: center; max-width: 1100px; margin: 0 auto; width: 100%;
-    position: relative; z-index: 1;
-  }
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+.stagger .reveal:nth-child(1){transition-delay:0s}.stagger .reveal:nth-child(2){transition-delay:.07s}.stagger .reveal:nth-child(3){transition-delay:.14s}.stagger .reveal:nth-child(4){transition-delay:.21s}.stagger .reveal:nth-child(5){transition-delay:.28s}.stagger .reveal:nth-child(6){transition-delay:.35s}.stagger .reveal:nth-child(7){transition-delay:.42s}.stagger .reveal:nth-child(8){transition-delay:.49s}
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
-    color: var(--accent); font-size: 0.8rem; font-weight: 600;
-    padding: 0.35rem 0.85rem; border-radius: 100px;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    margin-bottom: 1.25rem;
-  }
-
-  .hero-badge::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent3);
-    box-shadow: 0 0 0 3px rgba(52,211,153,0.25);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(52,211,153,0.25); }
-    50% { box-shadow: 0 0 0 6px rgba(52,211,153,0.1); }
-  }
-
-  h1.hero-name {
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    font-weight: 900; line-height: 1.05;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-title {
-    font-size: clamp(1rem, 2.5vw, 1.35rem); font-weight: 600;
-    color: var(--muted); margin-bottom: 1.5rem;
-  }
-
-  .hero-title .typed { color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
-  .cursor { animation: blink 1s step-end infinite; color: var(--accent); }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  .hero-desc {
-    font-size: 1.05rem; color: var(--muted); max-width: 520px;
-    margin-bottom: 2rem; line-height: 1.75;
-  }
-
-  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
-
-  .btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.7rem 1.5rem; border-radius: 10px; font-weight: 600;
-    font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
-    cursor: pointer; border: none; font-family: inherit;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #080c14;
-  }
-  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
-  .btn-outline {
-    background: transparent; border: 1px solid var(--border2);
-    color: var(--text);
-  }
-  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-  .hero-stats {
-    display: flex; gap: 2rem;
-  }
-  .hero-stat { text-align: center; }
-  .hero-stat-num {
-    font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-stat-label { font-size: 0.75rem; color: var(--muted2); font-weight: 500; }
-
-  .hero-avatar {
-    width: 240px; height: 240px; flex-shrink: 0;
-    position: relative;
-  }
-  .hero-avatar-inner {
-    width: 100%; height: 100%; border-radius: 30px;
-    background: linear-gradient(135deg, var(--card), #1e2d4a);
-    border: 1px solid var(--border2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 5rem; position: relative; overflow: hidden;
-  }
-  .hero-avatar-inner::before {
-    content: ''; position: absolute; inset: -2px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
-    border-radius: 32px; z-index: -1; opacity: 0.5;
-    animation: spin 6s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .hero-avatar-ring {
-    position: absolute; inset: -12px; border-radius: 40px;
-    border: 1px dashed rgba(56,189,248,0.2);
-    animation: spin 12s linear infinite reverse;
-  }
-
-  /* ── SECTIONS ── */
-  section { padding: 5rem max(1.5rem, 6vw); }
-  .section-inner { max-width: 1100px; margin: 0 auto; }
-
-  .section-label {
-    display: flex; align-items: center; gap: 0.75rem;
-    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
-  }
-  .section-label::before {
-    content: ''; width: 28px; height: 2px; background: var(--accent); border-radius: 2px;
-  }
-
-  h2.section-title {
-    font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800;
-    letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem;
-  }
-
-  .section-sub { color: var(--muted); max-width: 560px; margin-bottom: 3rem; }
-
-  /* ── ABOUT ── */
-  #about { background: var(--bg2); }
-
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-
-  .about-text p { color: var(--muted); line-height: 1.8; margin-bottom: 1rem; }
-
-  .about-info { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
-  .about-info-row {
-    display: flex; gap: 0.75rem; align-items: center;
-    font-size: 0.9rem; color: var(--muted);
-  }
-  .about-info-row svg { color: var(--accent); flex-shrink: 0; }
-  .about-info-row strong { color: var(--text); font-weight: 600; }
-
-  .about-cards { display: flex; flex-direction: column; gap: 1rem; }
-  .about-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.25rem;
-    display: flex; align-items: flex-start; gap: 1rem;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .about-card:hover { border-color: var(--border2); transform: translateX(4px); }
-  .about-card-icon {
-    width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-  }
-  .about-card-icon.blue { background: rgba(56,189,248,0.12); }
-  .about-card-icon.purple { background: rgba(129,140,248,0.12); }
-  .about-card-icon.green { background: rgba(52,211,153,0.12); }
-  .about-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
-  .about-card p { font-size: 0.82rem; color: var(--muted); }
-
-  /* ── SKILLS ── */
-  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-
-  .skill-group {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 1.5rem;
-    transition: border-color 0.2s;
-  }
-  .skill-group:hover { border-color: var(--border2); }
-
-  .skill-group-header {
-    display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;
-  }
-  .skill-group-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-  }
-
-  .skill-group-title { font-size: 0.95rem; font-weight: 700; }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .skill-tag {
-    font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.7rem;
-    border-radius: 6px; border: 1px solid;
-  }
-  .tag-blue { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.2); color: #7dd3fc; }
-  .tag-purple { background: rgba(129,140,248,0.08); border-color: rgba(129,140,248,0.2); color: #a5b4fc; }
-  .tag-green { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); color: #6ee7b7; }
-  .tag-orange { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.2); color: #fcd34d; }
-  .tag-red { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.2); color: #fca5a5; }
-
-  /* ── EXPERIENCE ── */
-  #experience { background: var(--bg2); }
-
-  .timeline { position: relative; padding-left: 2rem; }
-  .timeline::before {
-    content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px;
-    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
-    border-radius: 2px;
-  }
-
-  .timeline-item {
-    position: relative; padding-bottom: 2.5rem;
-  }
-  .timeline-item:last-child { padding-bottom: 0; }
-
-  .timeline-dot {
-    position: absolute; left: -2.45rem; top: 6px;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: 3px solid var(--bg2);
-    box-shadow: 0 0 0 4px rgba(56,189,248,0.15);
-  }
-
-  .timeline-content {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.5rem;
-    transition: border-color 0.2s;
-  }
-  .timeline-content:hover { border-color: var(--border2); }
-
-  .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
-  .timeline-role { font-size: 1rem; font-weight: 700; }
-  .timeline-date {
-    font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.65rem;
-    background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
-    color: var(--accent); border-radius: 6px; white-space: nowrap;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .timeline-company {
-    font-size: 0.875rem; color: var(--accent2); font-weight: 600; margin-bottom: 0.75rem;
-  }
-  .timeline-tasks { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-  .timeline-tasks li {
-    font-size: 0.85rem; color: var(--muted); padding-left: 1rem; position: relative;
-  }
-  .timeline-tasks li::before {
-    content: '▸'; position: absolute; left: 0; color: var(--accent3); font-size: 0.7rem; top: 2px;
-  }
-
-  /* ── PROJECTS ── */
-  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-
-  .project-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 1rem;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .project-card:hover { border-color: var(--border2); transform: translateY(-4px); }
-
-  .project-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .project-icon {
-    width: 46px; height: 46px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
-  }
-  .project-badge {
-    font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem;
-    border-radius: 6px; letter-spacing: 0.04em;
-  }
-  .badge-live { background: rgba(52,211,153,0.12); color: var(--accent3); border: 1px solid rgba(52,211,153,0.25); }
-  .badge-done { background: rgba(56,189,248,0.08); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
-
-  .project-name { font-size: 1.05rem; font-weight: 700; }
-  .project-client { font-size: 0.8rem; color: var(--accent2); font-weight: 600; margin-top: 0.15rem; }
-  .project-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; flex: 1; }
-  .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .project-tech {
-    font-size: 0.7rem; font-weight: 600; padding: 0.18rem 0.55rem;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    color: var(--muted); border-radius: 5px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── CERTIFICATIONS ── */
-  #certifications { background: var(--bg2); }
-
-  .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
-
-  .cert-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.25rem;
-    display: flex; gap: 1rem; align-items: flex-start;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .cert-card:hover { border-color: var(--border2); transform: translateY(-3px); }
-
-  .cert-logo {
-    width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
-  }
-  .cert-name { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.2rem; }
-  .cert-issuer { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
-  .cert-year { font-size: 0.7rem; color: var(--muted2); margin-top: 0.15rem; font-family: 'JetBrains Mono', monospace; }
-
-  /* ── EDUCATION ── */
-  .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
-  .edu-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.5rem;
-    transition: border-color 0.2s;
-  }
-  .edu-card:hover { border-color: var(--border2); }
-  .edu-emoji { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
-  .edu-degree { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
-  .edu-school { font-size: 0.82rem; color: var(--accent2); font-weight: 600; }
-  .edu-year { font-size: 0.75rem; color: var(--muted2); margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; }
-  .edu-status {
-    display: inline-block; margin-top: 0.5rem;
-    font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.55rem;
-    border-radius: 5px; letter-spacing: 0.04em;
-  }
-  .status-progress { background: rgba(251,191,36,0.1); color: #fcd34d; border: 1px solid rgba(251,191,36,0.25); }
-  .status-done { background: rgba(52,211,153,0.1); color: var(--accent3); border: 1px solid rgba(52,211,153,0.25); }
-
-  /* ── LANGUAGES ── */
-  .lang-grid { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-  .lang-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.25rem 1.75rem;
-    text-align: center; min-width: 140px;
-    transition: border-color 0.2s;
-  }
-  .lang-card:hover { border-color: var(--border2); }
-  .lang-flag { font-size: 1.8rem; margin-bottom: 0.5rem; }
-  .lang-name { font-size: 0.9rem; font-weight: 700; }
-  .lang-level {
-    font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem;
-  }
-  .lang-dots { display: flex; gap: 3px; justify-content: center; margin-top: 0.5rem; }
-  .lang-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3);
-  }
-  .lang-dot.active { background: var(--accent); border-color: var(--accent); }
-
-  /* ── CONTACT ── */
-  #contact {
-    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(56,189,248,0.06) 0%, transparent 70%),
-                var(--bg);
-  }
-
-  .contact-wrapper {
-    max-width: 700px; margin: 0 auto; text-align: center;
-  }
-
-  .contact-cards {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem; margin: 2.5rem 0;
-  }
-  .contact-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 1.25rem;
-    text-decoration: none; color: var(--text);
-    transition: border-color 0.2s, transform 0.2s;
-    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-  }
-  .contact-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-  .contact-card-icon { font-size: 1.5rem; }
-  .contact-card-label { font-size: 0.72rem; color: var(--muted2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-  .contact-card-value { font-size: 0.82rem; font-weight: 600; color: var(--accent); word-break: break-all; }
-
-  /* ── FOOTER ── */
-  footer {
-    background: var(--bg2); border-top: 1px solid var(--border);
-    padding: 2rem max(1.5rem, 6vw); text-align: center;
-    color: var(--muted2); font-size: 0.82rem;
-  }
-  footer strong { color: var(--accent); font-weight: 700; }
-
-  /* ── ANIMATIONS ── */
-  .reveal {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  .stagger .reveal:nth-child(1) { transition-delay: 0s; }
-  .stagger .reveal:nth-child(2) { transition-delay: 0.08s; }
-  .stagger .reveal:nth-child(3) { transition-delay: 0.16s; }
-  .stagger .reveal:nth-child(4) { transition-delay: 0.24s; }
-  .stagger .reveal:nth-child(5) { transition-delay: 0.32s; }
-  .stagger .reveal:nth-child(6) { transition-delay: 0.40s; }
-  .stagger .reveal:nth-child(7) { transition-delay: 0.48s; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-avatar { display: none; }
-    .about-grid { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 640px) {
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-    .nav-links.open {
-      display: flex; flex-direction: column;
-      position: fixed; inset: 64px 0 0 0;
-      background: rgba(8,12,20,0.97); backdrop-filter: blur(20px);
-      padding: 2rem 2rem;
-      gap: 1.5rem; z-index: 99;
-    }
-    .nav-links.open a { font-size: 1.1rem; }
-    .hero-stats { gap: 1.25rem; }
-    .hero-stat-num { font-size: 1.25rem; }
-    h2.section-title { font-size: 1.6rem; }
-    section { padding: 3.5rem 1.25rem; }
-  }
+/* RESPONSIVE */
+@media(max-width:1024px){.pg{grid-template-columns:repeat(2,1fr)}.sk-grid{grid-template-columns:repeat(2,1fr)}.sk-card.wide{grid-column:span 2}.cl{grid-template-columns:1fr}.exp-wrap{grid-template-columns:1fr}.exp-nav{position:static;display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem}}
+@media(max-width:768px){.hero-inner{grid-template-columns:1fr}.hero-card{display:none}.ag{grid-template-columns:1fr}.pg{grid-template-columns:1fr}.sk-grid{grid-template-columns:1fr}.sk-card.wide{grid-column:span 1}.cc-grid{grid-template-columns:1fr}.ai{grid-template-columns:1fr}.ci-grid{grid-template-columns:1fr}.ci:nth-child(even){border-right:1px solid var(--border)}.hero-stats{flex-direction:column;width:100%}.hs{border-right:none;border-bottom:1px solid var(--border)}.hs:last-child{border-bottom:none}.nav-links{display:none}.hamburger{display:flex}.nav-links.open{display:flex;flex-direction:column;position:fixed;inset:68px 0 0;background:rgba(5,8,15,0.97);backdrop-filter:blur(24px);padding:2rem;gap:0.5rem;z-index:99}.nav-links.open a{font-size:1rem;padding:0.7rem 1rem}footer{flex-direction:column;text-align:center}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="#hero" class="nav-brand">CJ.</a>
+<nav id="nav">
+  <a href="#hero" class="logo"><div class="logo-dot"></div>Carpus Jospin</a>
   <ul class="nav-links" id="navLinks">
     <li><a href="#about">À propos</a></li>
-    <li><a href="#skills">Compétences</a></li>
+    <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Expérience</a></li>
     <li><a href="#projects">Projets</a></li>
     <li><a href="#certifications">Certifs</a></li>
     <li><a href="#contact" class="nav-cta">Contact</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="hamburger" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO -->
+<!-- ═══ HERO ═══════════════════════════════════════════════════ -->
 <section id="hero">
   <div class="hero-bg"></div>
-  <div class="hero-grid">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
     <div>
-      <div class="hero-badge">Disponible pour missions</div>
-      <h1 class="hero-name">
-        Carpus<br />
-        <span class="gradient-text">Jospin</span>
-      </h1>
-      <p class="hero-title">
-        Développeur&nbsp;
-        <span class="typed" id="typedText"></span><span class="cursor">|</span>
-      </p>
-      <p class="hero-desc">
-        Passionné par la création d'applications web et mobiles robustes,
-        de systèmes ERP/CRM et de solutions SIG. Basé à Lomé, Togo —
-        avec une expérience de projets à impact national.
-      </p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          Voir mes projets
+      <div class="hero-eyebrow">Développeur Full Stack · Lomé, Togo</div>
+      <h1 class="hero-h1">Carpus<br><span class="ghost">Jospin</span></h1>
+      <p class="hero-role">Spécialiste&nbsp;<span class="typed-w" id="typed"></span><span class="cur">|</span></p>
+      <p class="hero-desc">Je conçois des applications web robustes, des solutions ERP/CRM et des systèmes SIG pour des institutions nationales et des entreprises en Afrique de l'Ouest.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn btn-blue">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Voir mes projets
         </a>
-        <a href="#contact" class="btn btn-outline">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Me contacter
+        <a href="#contact" class="btn btn-ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Me contacter
         </a>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-num">2+</div>
-          <div class="hero-stat-label">Ans d'expérience</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">6+</div>
-          <div class="hero-stat-label">Projets livrés</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">13+</div>
-          <div class="hero-stat-label">Certifications</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">20+</div>
-          <div class="hero-stat-label">Technologies</div>
-        </div>
+        <div class="hs"><span class="hs-n">2+</span><span class="hs-l">Ans exp.</span></div>
+        <div class="hs"><span class="hs-n">6+</span><span class="hs-l">Projets</span></div>
+        <div class="hs"><span class="hs-n">13+</span><span class="hs-l">Certifs</span></div>
+        <div class="hs"><span class="hs-n">20+</span><span class="hs-l">Technos</span></div>
       </div>
     </div>
-    <div class="hero-avatar">
-      <div class="hero-avatar-ring"></div>
-      <div class="hero-avatar-inner">
-        <span style="position:relative;z-index:1;">💻</span>
+    <div class="hero-card">
+      <div class="hc-top"><div class="hc-avatar">💻</div></div>
+      <div class="hc-body">
+        <div class="hc-name">Carpus Jospin NGANZE</div>
+        <div class="hc-role">Développeur Full Stack</div>
+        <div class="hc-div"></div>
+        <div class="hc-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Lomé, Togo</div>
+        <div class="hc-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>carpus.n@hitech-services.com</div>
+        <div class="hc-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>+228 98 54 50 20</div>
+        <div class="hc-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>HI TECH Informatique</div>
+        <div style="text-align:center;margin-top:0.8rem"><span class="hc-badge">Disponible</span></div>
       </div>
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- ABOUT -->
+<!-- ═══ ABOUT ═══════════════════════════════════════════════════ -->
 <section id="about">
-  <div class="section-inner">
-    <div class="section-label">À propos de moi</div>
-    <h2 class="section-title">Qui suis-je ?</h2>
-    <div class="about-grid">
-      <div class="about-text">
-        <p>
-          Je suis <strong style="color:var(--text)">NGANZE BEMBIDE MBOROBO Carpus Jospin</strong>, développeur Full Stack âgé de 25 ans, basé à Lomé, Togo. Je conçois et déploie des applications web, des API, des modules ERP/CRM ainsi que des solutions de cartographie SIG.
-        </p>
-        <p>
-          Actuellement en poste chez <strong style="color:var(--accent2)">HI TECH Informatique</strong>, j'ai travaillé sur des projets d'envergure nationale : systèmes de gestion fiscale (DGID-RCA), cartographie postale (Société des Postes du Togo) et infrastructures portuaires (Port Autonome de Lomé).
-        </p>
-        <p>
-          Autodidacte et curieux, je me forme en continu et j'ai obtenu <strong style="color:var(--text)">13+ certifications</strong> en Microsoft 365, Fortinet et Veeam en 2024–2025.
-        </p>
-        <div class="about-info">
-          <div class="about-info-row">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>Lomé, Tokoin Hôpital — Togo</span>
-          </div>
-          <div class="about-info-row">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span><strong>carpus.n@hitech-services.com</strong></span>
-          </div>
-          <div class="about-info-row">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.29 6.29l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.21v1.71z"/></svg>
-            <span>+228 98 54 50 20 &nbsp;/&nbsp; 71 42 16 95</span>
-          </div>
+  <div class="si">
+    <div class="ag">
+      <div>
+        <div class="chip">À propos</div>
+        <h2 class="st">Qui suis-je ?</h2>
+        <div class="ab">
+          <p>Je suis <strong>NGANZE BEMBIDE MBOROBO Carpus Jospin</strong>, développeur Full Stack de 25 ans basé à Lomé. Je conçois des applications web complètes, de la maquette à la mise en production, en passant par l'intégration d'APIs, la gestion de bases de données et le déploiement serveur.</p>
+          <p>Depuis 2023, je travaille chez <strong>HI TECH Informatique</strong> où j'interviens sur des projets d'envergure nationale pour la DGID, la Société des Postes du Togo, le Port Autonome de Lomé et la BOAD.</p>
+          <p>Autodidacte engagé, j'ai obtenu <strong>13+ certifications</strong> en 2024–2025 (Microsoft 365, Fortinet, Veeam) et poursuis une Licence Professionnelle à l'ESA de Lomé.</p>
+        </div>
+        <div class="ai">
+          <div class="ai-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><div><strong>Localisation</strong>Lomé, Tokoin Hôpital</div></div>
+          <div class="ai-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg><div><strong>Entreprise</strong>HI TECH Informatique</div></div>
+          <div class="ai-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.29 6.29l1.41-1.41a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.21v1.71z"/></svg><div><strong>Téléphone</strong>+228 98 54 50 20</div></div>
+          <div class="ai-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><div><strong>Langues</strong>Français · Anglais</div></div>
         </div>
       </div>
-      <div class="about-cards">
-        <div class="about-card reveal">
-          <div class="about-card-icon blue">🌐</div>
-          <div>
-            <h3>Développement Web</h3>
-            <p>Applications front-end réactives avec React, interfaces back-end robustes avec PHP et APIs REST.</p>
-          </div>
-        </div>
-        <div class="about-card reveal">
-          <div class="about-card-icon purple">🗺️</div>
-          <div>
-            <h3>Systèmes SIG & Cartographie</h3>
-            <p>Solutions d'adressage et cartographie avec ArcGIS pour des institutions nationales et régionales.</p>
-          </div>
-        </div>
-        <div class="about-card reveal">
-          <div class="about-card-icon green">⚙️</div>
-          <div>
-            <h3>ERP / CRM</h3>
-            <p>Déploiement et personnalisation de modules Odoo et Dolibarr pour PME et institutions publiques.</p>
-          </div>
-        </div>
-        <div class="about-card reveal">
-          <div class="about-card-icon blue">🔒</div>
-          <div>
-            <h3>Cybersécurité & Infra</h3>
-            <p>Administration Fortinet, Veeam Backup, Linux et Microsoft 365 — sécurité et continuité des SI.</p>
-          </div>
-        </div>
+      <div class="af-wrap stagger">
+        <div class="af reveal"><div class="af-ico" style="background:rgba(59,158,255,0.1)">🌐</div><div><div class="af-t">Développement Web Full Stack</div><div class="af-d">Applications web & mobiles, APIs REST, React et back-end PHP/Python robustes et évolutifs.</div></div></div>
+        <div class="af reveal"><div class="af-ico" style="background:rgba(52,211,153,0.1)">🗺️</div><div><div class="af-t">SIG & Cartographie ArcGIS</div><div class="af-d">Cartographie, adressage et analyse géospatiale avec ArcGIS pour des institutions nationales.</div></div></div>
+        <div class="af reveal"><div class="af-ico" style="background:rgba(240,180,41,0.1)">⚙️</div><div><div class="af-t">ERP / CRM</div><div class="af-d">Déploiement et personnalisation de modules Odoo et Dolibarr pour la gestion d'entreprise.</div></div></div>
+        <div class="af reveal"><div class="af-ico" style="background:rgba(248,100,100,0.1)">🔒</div><div><div class="af-t">Cybersécurité & Infrastructure</div><div class="af-d">Administration Fortinet, Veeam, Linux et Microsoft 365 — sécurité et continuité des SI.</div></div></div>
       </div>
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- SKILLS -->
+<!-- ═══ SKILLS ═══════════════════════════════════════════════════ -->
 <section id="skills">
-  <div class="section-inner">
-    <div class="section-label">Compétences techniques</div>
-    <h2 class="section-title">Mon stack technologique</h2>
-    <p class="section-sub">Des langages front-end aux systèmes back-end, de la cartographie SIG à la cybersécurité.</p>
-    <div class="skills-grid stagger">
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(56,189,248,0.1)">🖥️</div>
-          <div class="skill-group-title">Front-End</div>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag tag-blue">HTML5</span>
-          <span class="skill-tag tag-blue">CSS3</span>
-          <span class="skill-tag tag-blue">JavaScript</span>
-          <span class="skill-tag tag-blue">React</span>
-          <span class="skill-tag tag-blue">Bootstrap 5</span>
+  <div class="si">
+    <div class="chip">Compétences</div>
+    <h2 class="st">Stack technologique</h2>
+    <p class="ss">Frontend, backend, bases de données, SIG, ERP et cybersécurité — une couverture technique complète.</p>
+    <div class="sk-grid stagger">
+      <div class="sk-card reveal">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(59,158,255,0.1)">🖥️</div><span class="sk-title">Front-End</span><span class="sk-ct">5</span></div>
+        <div class="tags"><span class="tag tb">HTML5</span><span class="tag tb">CSS3</span><span class="tag tb">JavaScript</span><span class="tag tb">React</span><span class="tag tb">Bootstrap 5</span></div>
+      </div>
+      <div class="sk-card reveal">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(160,100,255,0.1)">⚙️</div><span class="sk-title">Back-End</span><span class="sk-ct">6</span></div>
+        <div class="tags"><span class="tag tp">PHP</span><span class="tag tp">Java</span><span class="tag tp">Python</span><span class="tag tp">API REST</span><span class="tag tp">Shell Script</span><span class="tag tp">XML</span></div>
+      </div>
+      <div class="sk-card reveal">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(52,211,153,0.1)">🗄️</div><span class="sk-title">BDD & Outils</span><span class="sk-ct">4</span></div>
+        <div class="tags"><span class="tag tg">MySQL</span><span class="tag tg">SQL</span><span class="tag tg">Git</span><span class="tag tg">FileZilla</span></div>
+      </div>
+      <div class="sk-card reveal">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(240,180,41,0.1)">🗺️</div><span class="sk-title">ERP / CRM / SIG</span><span class="sk-ct">4</span></div>
+        <div class="tags"><span class="tag ty">Odoo</span><span class="tag ty">Dolibarr</span><span class="tag ty">ArcGIS</span><span class="tag ty">Python for ArcGIS</span></div>
+      </div>
+      <div class="sk-card reveal">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(248,100,100,0.1)">🛡️</div><span class="sk-title">Infra & Sécurité</span><span class="sk-ct">4</span></div>
+        <div class="tags"><span class="tag tr">Fortinet</span><span class="tag tr">Veeam</span><span class="tag tr">Linux</span><span class="tag tr">Microsoft 365</span></div>
+      </div>
+      <div class="sk-card reveal" style="background:linear-gradient(135deg,var(--surface),rgba(59,158,255,0.04))">
+        <div class="sk-head"><div class="sk-ico" style="background:rgba(59,158,255,0.1)">🌍</div><span class="sk-title">Langues</span></div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem">
+          <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span>🇫🇷 Français</span><span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.68rem">Excellent</span></div><div class="lang-bar"><div class="lang-fill" style="width:95%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px"><span>🇬🇧 Anglais</span><span style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:0.68rem">Fonctionnel</span></div><div class="lang-bar"><div class="lang-fill" style="width:55%"></div></div></div>
         </div>
       </div>
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(129,140,248,0.1)">⚙️</div>
-          <div class="skill-group-title">Back-End</div>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag tag-purple">PHP</span>
-          <span class="skill-tag tag-purple">Java</span>
-          <span class="skill-tag tag-purple">Python</span>
-          <span class="skill-tag tag-purple">API REST</span>
-          <span class="skill-tag tag-purple">XML</span>
-          <span class="skill-tag tag-purple">Shell Script</span>
-        </div>
-      </div>
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(52,211,153,0.1)">🗄️</div>
-          <div class="skill-group-title">Base de données & Outils</div>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag tag-green">MySQL</span>
-          <span class="skill-tag tag-green">SQL</span>
-          <span class="skill-tag tag-green">Git</span>
-          <span class="skill-tag tag-green">FileZilla</span>
-        </div>
-      </div>
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(251,191,36,0.1)">🗺️</div>
-          <div class="skill-group-title">ERP / CRM / SIG</div>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag tag-orange">Odoo</span>
-          <span class="skill-tag tag-orange">Dolibarr</span>
-          <span class="skill-tag tag-orange">ArcGIS</span>
-          <span class="skill-tag tag-orange">Python for ArcGIS</span>
-        </div>
-      </div>
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(248,113,113,0.1)">🛡️</div>
-          <div class="skill-group-title">Infra & Sécurité</div>
-        </div>
-        <div class="skill-tags">
-          <span class="skill-tag tag-red">Fortinet</span>
-          <span class="skill-tag tag-red">Veeam</span>
-          <span class="skill-tag tag-red">Linux</span>
-          <span class="skill-tag tag-red">Microsoft 365</span>
-        </div>
-      </div>
-
-      <div class="skill-group reveal">
-        <div class="skill-group-header">
-          <div class="skill-group-icon" style="background:rgba(56,189,248,0.1)">🌍</div>
-          <div class="skill-group-title">Langues</div>
-        </div>
-        <div class="lang-grid" style="margin-top:0.5rem;">
-          <div class="lang-card" style="padding:0.85rem 1rem">
-            <div class="lang-flag">🇫🇷</div>
-            <div class="lang-name" style="font-size:0.82rem">Français</div>
-            <div class="lang-dots">
-              <div class="lang-dot active"></div><div class="lang-dot active"></div><div class="lang-dot active"></div><div class="lang-dot active"></div><div class="lang-dot active"></div>
-            </div>
-          </div>
-          <div class="lang-card" style="padding:0.85rem 1rem">
-            <div class="lang-flag">🇬🇧</div>
-            <div class="lang-name" style="font-size:0.82rem">Anglais</div>
-            <div class="lang-dots">
-              <div class="lang-dot active"></div><div class="lang-dot active"></div><div class="lang-dot active"></div><div class="lang-dot"></div><div class="lang-dot"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- EXPERIENCE -->
+<!-- ═══ EXPERIENCE ═══════════════════════════════════════════════════ -->
 <section id="experience">
-  <div class="section-inner">
-    <div class="section-label">Parcours professionnel</div>
-    <h2 class="section-title">Expériences</h2>
-    <p class="section-sub">Un parcours orienté impact, avec des réalisations concrètes pour des institutions publiques et privées.</p>
-    <div class="timeline">
-
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-role">Développeur Full Stack (Front-end & Back-end)</div>
-            <div class="timeline-date">Sept 2023 — Présent</div>
+  <div class="si">
+    <div class="chip">Parcours</div>
+    <h2 class="st">Expériences professionnelles</h2>
+    <p class="ss">Des projets concrets pour des institutions publiques et des entreprises en Afrique de l'Ouest.</p>
+    <div class="exp-wrap">
+      <div class="exp-nav">
+        <div class="en-item active" data-e="0"><div class="en-dot"></div>HI TECH (CDI)</div>
+        <div class="en-item" data-e="1"><div class="en-dot"></div>HI TECH (Stage)</div>
+        <div class="en-item" data-e="2"><div class="en-dot"></div>RichcaMarket</div>
+        <div class="en-item" data-e="3"><div class="en-dot"></div>EMEA MANPOWER</div>
+      </div>
+      <div>
+        <div class="ec on" data-e="0">
+          <div class="ec-head"><div class="ec-title">Développeur Full Stack</div><div class="ec-date">Sept 2023 — Présent</div></div>
+          <div class="ec-co"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>HI TECH Informatique — Lomé, Togo</div>
+          <div class="ec-tasks">
+            <div class="ec-task"><div class="tb-dot"></div><span>Conception et développement d'applications web et mobiles (front-end & back-end)</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Conception et intégration d'APIs REST</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Développement de modules ERP Odoo et CRM Dolibarr personnalisés</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Déploiement de solutions SIG avec ArcGIS pour des institutions nationales</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Administration système Linux et Microsoft 365</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Gestion et optimisation de bases de données MySQL/SQL</span></div>
           </div>
-          <div class="timeline-company">🏢 HI TECH Informatique — Lomé, Togo</div>
-          <ul class="timeline-tasks">
-            <li>Conception et développement d'applications web & mobiles</li>
-            <li>Création et intégration d'APIs REST</li>
-            <li>Développement de modules ERP (Odoo) et CRM (Dolibarr)</li>
-            <li>Administration système Linux et Microsoft 365</li>
-            <li>Gestion et optimisation de bases de données</li>
-            <li>Déploiement de solutions de cartographie SIG avec ArcGIS</li>
-          </ul>
+          <div style="display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:1.25rem"><span class="tag tb">React</span><span class="tag tp">PHP</span><span class="tag tp">Python</span><span class="tag ty">Odoo</span><span class="tag ty">ArcGIS</span><span class="tag tr">Fortinet</span></div>
+        </div>
+        <div class="ec" data-e="1">
+          <div class="ec-head"><div class="ec-title">Stage — Développement Web</div><div class="ec-date">Sept — Déc 2023</div></div>
+          <div class="ec-co"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>HI TECH Informatique — Lomé, Togo</div>
+          <div class="ec-tasks">
+            <div class="ec-task"><div class="tb-dot"></div><span>Intégration et développement d'interfaces web</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Contribution aux modules CRM Dolibarr</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Support à l'administration système</span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:1.25rem"><span class="tag tb">HTML5</span><span class="tag tb">CSS3</span><span class="tag ty">Dolibarr</span><span class="tag tp">PHP</span></div>
+        </div>
+        <div class="ec" data-e="2">
+          <div class="ec-head"><div class="ec-title">Développeur & Community Manager</div><div class="ec-date">2022 — Août 2023</div></div>
+          <div class="ec-co"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>RichcaMarket — Togo</div>
+          <div class="ec-tasks">
+            <div class="ec-task"><div class="tb-dot"></div><span>Développement et maintenance d'une boutique e-commerce</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Gestion des réseaux sociaux et communication digitale</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Optimisation UX des pages produits</span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:1.25rem"><span class="tag tb">JavaScript</span><span class="tag tp">PHP</span><span class="tag tx">Community Mgmt</span></div>
+        </div>
+        <div class="ec" data-e="3">
+          <div class="ec-head"><div class="ec-title">Stage — Développement Web</div><div class="ec-date">Sept 2022 — Août 2023</div></div>
+          <div class="ec-co"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>EMEA MANPOWER</div>
+          <div class="ec-tasks">
+            <div class="ec-task"><div class="tb-dot"></div><span>Développement d'interfaces web et intégration front-end</span></div>
+            <div class="ec-task"><div class="tb-dot"></div><span>Participation à des projets de développement web en équipe</span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:1.25rem"><span class="tag tb">HTML5</span><span class="tag tb">CSS3</span><span class="tag tb">JavaScript</span></div>
         </div>
       </div>
-
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-role">Stage — Développement Web</div>
-            <div class="timeline-date">Sept — Déc 2023</div>
-          </div>
-          <div class="timeline-company">🏢 HI TECH Informatique — Lomé, Togo</div>
-          <ul class="timeline-tasks">
-            <li>Intégration et développement d'interfaces web</li>
-            <li>Contribution aux modules CRM Dolibarr</li>
-            <li>Support à l'administration système</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-role">Développeur & Community Manager</div>
-            <div class="timeline-date">2022 — Août 2023</div>
-          </div>
-          <div class="timeline-company">🛒 RichcaMarket — Togo</div>
-          <ul class="timeline-tasks">
-            <li>Développement et maintenance d'une boutique e-commerce</li>
-            <li>Gestion des réseaux sociaux et communication digitale</li>
-            <li>Optimisation des pages produits et de l'expérience utilisateur</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="timeline-item reveal">
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-role">Stage — Développement Web</div>
-            <div class="timeline-date">Sept 2022 — Août 2023</div>
-          </div>
-          <div class="timeline-company">🌍 EMEA MANPOWER</div>
-          <ul class="timeline-tasks">
-            <li>Développement d'interfaces web et intégration front-end</li>
-            <li>Participation à des projets de développement web multi-équipes</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- PROJECTS -->
+<!-- ═══ PROJECTS ═══════════════════════════════════════════════════ -->
 <section id="projects">
-  <div class="section-inner">
-    <div class="section-label">Réalisations</div>
-    <h2 class="section-title">Projets clés</h2>
-    <p class="section-sub">Des solutions déployées pour des institutions nationales et des acteurs économiques majeurs du Togo et d'Afrique de l'Ouest.</p>
-    <div class="projects-grid stagger">
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(251,191,36,0.1)">⚙️</div>
-          <span class="project-badge badge-live">Production</span>
-        </div>
-        <div>
-          <div class="project-name">ERP Odoo — DGID</div>
-          <div class="project-client">Direction Générale des Impôts et des Domaines (RCA)</div>
-        </div>
-        <p class="project-desc">Déploiement et personnalisation d'un système ERP Odoo pour la gestion fiscale et domaniale. Automatisation des workflows administratifs et gestion documentaire.</p>
-        <div class="project-stack">
-          <span class="project-tech">Odoo</span>
-          <span class="project-tech">Python</span>
-          <span class="project-tech">PostgreSQL</span>
-          <span class="project-tech">XML</span>
-        </div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(129,140,248,0.1)">📦</div>
-          <span class="project-badge badge-live">Production</span>
-        </div>
-        <div>
-          <div class="project-name">CRM Dolibarr — HiTech</div>
-          <div class="project-client">HI TECH Informatique</div>
-        </div>
-        <p class="project-desc">Développement et personnalisation de modules CRM Dolibarr pour la gestion commerciale interne : clients, devis, facturation et suivi des interventions.</p>
-        <div class="project-stack">
-          <span class="project-tech">Dolibarr</span>
-          <span class="project-tech">PHP</span>
-          <span class="project-tech">MySQL</span>
-          <span class="project-tech">API REST</span>
-        </div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(52,211,153,0.1)">📮</div>
-          <span class="project-badge badge-live">Production</span>
-        </div>
-        <div>
-          <div class="project-name">Post Maps — Adressage Postal</div>
-          <div class="project-client">Société des Postes du Togo (SPT)</div>
-        </div>
-        <p class="project-desc">Système de cartographie et d'adressage postal national avec ArcGIS. Géolocalisation des boîtes postales, visualisation interactive des zones de distribution.</p>
-        <div class="project-stack">
-          <span class="project-tech">ArcGIS</span>
-          <span class="project-tech">Python</span>
-          <span class="project-tech">JavaScript</span>
-          <span class="project-tech">REST API</span>
-        </div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(56,189,248,0.1)">⚓</div>
-          <span class="project-badge badge-live">Production</span>
-        </div>
-        <div>
-          <div class="project-name">SIG Portuaire — ArcGIS PAL</div>
-          <div class="project-client">Port Autonome de Lomé</div>
-        </div>
-        <p class="project-desc">Solution SIG pour la cartographie et la gestion des infrastructures portuaires. Visualisation des zones d'activité, gestion des concessions et suivi logistique géospatial.</p>
-        <div class="project-stack">
-          <span class="project-tech">ArcGIS</span>
-          <span class="project-tech">Python</span>
-          <span class="project-tech">SQL</span>
-          <span class="project-tech">Shell Script</span>
-        </div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(56,189,248,0.1)">🏦</div>
-          <span class="project-badge badge-done">Livré</span>
-        </div>
-        <div>
-          <div class="project-name">SIG Financier — ArcGIS BOAD</div>
-          <div class="project-client">Banque Ouest Africaine de Développement</div>
-        </div>
-        <p class="project-desc">Cartographie des projets financés par la BOAD en Afrique de l'Ouest. Visualisation géospatiale des investissements et zones d'intervention à l'échelle régionale.</p>
-        <div class="project-stack">
-          <span class="project-tech">ArcGIS</span>
-          <span class="project-tech">Python</span>
-          <span class="project-tech">SQL</span>
-        </div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-header">
-          <div class="project-icon" style="background:rgba(251,191,36,0.1)">☁️</div>
-          <span class="project-badge badge-done">Livré</span>
-        </div>
-        <div>
-          <div class="project-name">Microsoft 365 Admin</div>
-          <div class="project-client">HI TECH Informatique</div>
-        </div>
-        <p class="project-desc">Administration complète de l'environnement Microsoft 365 : gestion des utilisateurs, groupes, licences, sécurité et conformité, Exchange et Teams.</p>
-        <div class="project-stack">
-          <span class="project-tech">Microsoft 365</span>
-          <span class="project-tech">Azure AD</span>
-          <span class="project-tech">Exchange</span>
-          <span class="project-tech">PowerShell</span>
-        </div>
-      </div>
-
+  <div class="si">
+    <div class="chip">Réalisations</div>
+    <h2 class="st">Projets clés</h2>
+    <p class="ss">Des solutions livrées pour des institutions nationales et régionales majeures d'Afrique de l'Ouest.</p>
+    <div class="pg stagger">
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(240,180,41,0.1)">⚙️</div><span class="ps ps-live">Production</span></div><div class="pc-n">ERP Odoo — DGID</div><div class="pc-cl">Direction Générale des Impôts et Domaines · RCA</div><p class="pc-d">Déploiement et personnalisation d'un système ERP Odoo pour la gestion fiscale et domaniale. Automatisation des workflows et gestion documentaire à l'échelle nationale.</p><div class="pc-s"><span class="pt">Odoo</span><span class="pt">Python</span><span class="pt">PostgreSQL</span><span class="pt">XML</span></div></div></div>
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(160,100,255,0.1)">📦</div><span class="ps ps-live">Production</span></div><div class="pc-n">CRM Dolibarr — HiTech</div><div class="pc-cl">HI TECH Informatique · Togo</div><p class="pc-d">Développement et personnalisation de modules CRM pour la gestion commerciale interne : clients, devis, facturation et suivi des interventions techniques.</p><div class="pc-s"><span class="pt">Dolibarr</span><span class="pt">PHP</span><span class="pt">MySQL</span><span class="pt">API REST</span></div></div></div>
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(52,211,153,0.1)">📮</div><span class="ps ps-live">Production</span></div><div class="pc-n">Post Maps — SPT</div><div class="pc-cl">Société des Postes du Togo</div><p class="pc-d">Système d'adressage postal national avec ArcGIS. Géolocalisation des boîtes postales et visualisation interactive des zones de distribution à l'échelle du Togo.</p><div class="pc-s"><span class="pt">ArcGIS</span><span class="pt">Python</span><span class="pt">JavaScript</span><span class="pt">REST API</span></div></div></div>
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(59,158,255,0.1)">⚓</div><span class="ps ps-live">Production</span></div><div class="pc-n">SIG Portuaire — PAL</div><div class="pc-cl">Port Autonome de Lomé · Togo</div><p class="pc-d">Solution SIG pour la cartographie des infrastructures portuaires. Visualisation des zones d'activité, gestion des concessions et suivi logistique géospatial.</p><div class="pc-s"><span class="pt">ArcGIS</span><span class="pt">Python</span><span class="pt">SQL</span><span class="pt">Shell Script</span></div></div></div>
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(59,158,255,0.08)">🏦</div><span class="ps ps-done">Livré</span></div><div class="pc-n">SIG Financier — BOAD</div><div class="pc-cl">Banque Ouest Africaine de Développement</div><p class="pc-d">Cartographie des projets financés par la BOAD en Afrique de l'Ouest. Visualisation géospatiale des investissements et zones d'intervention à l'échelle régionale.</p><div class="pc-s"><span class="pt">ArcGIS</span><span class="pt">Python</span><span class="pt">SQL</span></div></div></div>
+      <div class="pc reveal"><div class="pc-bar"></div><div class="pc-in"><div class="pc-top"><div class="pc-ico" style="background:rgba(0,114,239,0.1)">☁️</div><span class="ps ps-done">Livré</span></div><div class="pc-n">Microsoft 365 Admin</div><div class="pc-cl">HI TECH Informatique · Togo</div><p class="pc-d">Administration complète M365 : gestion des utilisateurs, groupes, licences, sécurité, Exchange et Teams pour l'infrastructure de l'entreprise.</p><div class="pc-s"><span class="pt">Microsoft 365</span><span class="pt">Azure AD</span><span class="pt">Exchange</span><span class="pt">PowerShell</span></div></div></div>
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- CERTIFICATIONS -->
+<!-- ═══ CERTIFICATIONS ═══════════════════════════════════════════════════ -->
 <section id="certifications">
-  <div class="section-inner">
-    <div class="section-label">Certifications</div>
-    <h2 class="section-title">13+ certifications obtenues</h2>
-    <p class="section-sub">Un engagement fort pour la formation continue — Microsoft, Fortinet et Veeam en 2024–2025.</p>
-    <div class="certs-grid stagger">
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,114,239,0.1)">🪟</div>
-        <div>
-          <div class="cert-name">Microsoft 365 — Configuration</div>
-          <div class="cert-issuer">Microsoft</div>
-          <div class="cert-year">2025</div>
+  <div class="si">
+    <div class="chip">Certifications</div>
+    <h2 class="st">13+ certifications</h2>
+    <p class="ss">Un investissement continu dans la formation — Microsoft, Fortinet et Veeam en 2024–2025.</p>
+    <div class="cl">
+      <div class="cg-wrap stagger">
+        <div class="cg reveal">
+          <div class="cg-head"><div class="cg-logo" style="background:rgba(0,114,239,0.1)">🪟</div><div><div class="cg-name">Microsoft</div><div class="cg-cnt">4 certifications · 2025</div></div></div>
+          <div class="ci-grid">
+            <div class="ci"><div class="ci-ch" style="background:rgba(0,114,239,0.1);color:#60a5fa">✓</div>Configuration Microsoft 365<span class="ci-yr">2025</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(0,114,239,0.1);color:#60a5fa">✓</div>Fondamentaux M365<span class="ci-yr">2025</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(0,114,239,0.1);color:#60a5fa">✓</div>Cloud Computing M365<span class="ci-yr">2025</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(0,114,239,0.1);color:#60a5fa">✓</div>Solutions de productivité<span class="ci-yr">2025</span></div>
+          </div>
+        </div>
+        <div class="cg reveal">
+          <div class="cg-head"><div class="cg-logo" style="background:rgba(248,100,100,0.1)">🛡️</div><div><div class="cg-name">Fortinet</div><div class="cg-cnt">3 certifications · 2024–2025</div></div></div>
+          <div class="ci-grid">
+            <div class="ci"><div class="ci-ch" style="background:rgba(248,100,100,0.1);color:#f88080">✓</div>Cloud Security<span class="ci-yr">2025</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(248,100,100,0.1);color:#f88080">✓</div>Network Security IoT<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(248,100,100,0.1);color:#f88080">✓</div>SD-WAN<span class="ci-yr">2024</span></div>
+          </div>
+        </div>
+        <div class="cg reveal">
+          <div class="cg-head"><div class="cg-logo" style="background:rgba(52,211,153,0.1)">💾</div><div><div class="cg-name">Veeam</div><div class="cg-cnt">6 certifications · 2024</div></div></div>
+          <div class="ci-grid">
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Veeam CSP<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Veeam SaaS<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Cybersecurity & DR<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Public Cloud<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Veeam for M365<span class="ci-yr">2024</span></div>
+            <div class="ci"><div class="ci-ch" style="background:rgba(52,211,153,0.1);color:#34d399">✓</div>Data Platform<span class="ci-yr">2024</span></div>
+          </div>
         </div>
       </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,114,239,0.1)">🪟</div>
-        <div>
-          <div class="cert-name">Microsoft 365 — Fondamentaux</div>
-          <div class="cert-issuer">Microsoft</div>
-          <div class="cert-year">2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,114,239,0.1)">☁️</div>
-        <div>
-          <div class="cert-name">Cloud Computing — M365</div>
-          <div class="cert-issuer">Microsoft</div>
-          <div class="cert-year">2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,114,239,0.1)">⚡</div>
-        <div>
-          <div class="cert-name">Solutions de productivité M365</div>
-          <div class="cert-issuer">Microsoft</div>
-          <div class="cert-year">2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(255,60,60,0.1)">🛡️</div>
-        <div>
-          <div class="cert-name">Cloud Security</div>
-          <div class="cert-issuer">Fortinet</div>
-          <div class="cert-year">2024–2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(255,60,60,0.1)">🌐</div>
-        <div>
-          <div class="cert-name">Network Security IoT</div>
-          <div class="cert-issuer">Fortinet</div>
-          <div class="cert-year">2024–2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(255,60,60,0.1)">🔀</div>
-        <div>
-          <div class="cert-name">SD-WAN</div>
-          <div class="cert-issuer">Fortinet</div>
-          <div class="cert-year">2024–2025</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">💾</div>
-        <div>
-          <div class="cert-name">Veeam CSP</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">☁️</div>
-        <div>
-          <div class="cert-name">Veeam SaaS</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">🔐</div>
-        <div>
-          <div class="cert-name">Cybersecurity & DR</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">🌩️</div>
-        <div>
-          <div class="cert-name">Veeam Public Cloud</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">📦</div>
-        <div>
-          <div class="cert-name">Veeam for M365</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(0,189,126,0.1)">🗄️</div>
-        <div>
-          <div class="cert-name">Veeam Data Platform</div>
-          <div class="cert-issuer">Veeam</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-      <div class="cert-card reveal">
-        <div class="cert-logo" style="background:rgba(251,191,36,0.1)">🗺️</div>
-        <div>
-          <div class="cert-name">Python for ArcGIS</div>
-          <div class="cert-issuer">Esri / ArcGIS</div>
-          <div class="cert-year">2024</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Education -->
-    <div style="margin-top:3rem;">
-      <div class="section-label" style="margin-bottom:1.5rem">Formation académique</div>
-      <div class="edu-grid stagger">
-        <div class="edu-card reveal">
-          <span class="edu-emoji">🎓</span>
-          <div class="edu-degree">Licence Professionnelle</div>
-          <div class="edu-school">ESA — École Supérieure de l'Assurance, Lomé</div>
-          <div class="edu-year">2025</div>
-          <span class="edu-status status-progress">En cours</span>
-        </div>
-        <div class="edu-card reveal">
-          <span class="edu-emoji">📜</span>
-          <div class="edu-degree">Baccalauréat Série D</div>
-          <div class="edu-school">NewTech Institut, Lomé</div>
-          <div class="edu-year">2016</div>
-          <span class="edu-status status-done">Obtenu</span>
-        </div>
+      <div class="edu-wrap stagger">
+        <div class="edu-c reveal"><span class="edu-ico">🎓</span><div class="edu-deg">Licence Professionnelle</div><div class="edu-sch">ESA — École Supérieure des Affaires, Lomé</div><div class="edu-yr">2025</div><span class="pill pill-wip">En cours</span></div>
+        <div class="edu-c reveal"><span class="edu-ico">📜</span><div class="edu-deg">Baccalauréat</div><div class="edu-sch">NewTech Institut, Lomé</div><div class="edu-yr">2016</div><span class="pill pill-ok">Obtenu</span></div>
+        <div class="edu-c reveal"><span class="edu-ico">🗺️</span><div class="edu-deg">Python for ArcGIS</div><div class="edu-sch">Esri / ArcGIS Academy</div><div class="edu-yr">2024</div><span class="pill pill-ok">Certifié</span></div>
       </div>
     </div>
   </div>
 </section>
+<div class="dvd"></div>
 
-<!-- CONTACT -->
+<!-- ═══ CONTACT ═══════════════════════════════════════════════════ -->
 <section id="contact">
-  <div class="section-inner">
-    <div class="contact-wrapper">
-      <div class="section-label" style="justify-content:center">Contact</div>
-      <h2 class="section-title" style="text-align:center">Travaillons ensemble</h2>
-      <p class="section-sub" style="margin:0 auto 0.5rem;text-align:center">
-        Vous avez un projet web, une application à construire, un ERP à déployer ou une solution SIG à développer ?
-        N'hésitez pas à me contacter.
-      </p>
-      <div class="contact-cards">
-        <a href="mailto:carpus.n@hitech-services.com" class="contact-card">
-          <div class="contact-card-icon">📧</div>
-          <div class="contact-card-label">Email</div>
-          <div class="contact-card-value">carpus.n@hitech-services.com</div>
-        </a>
-        <a href="tel:+22898545020" class="contact-card">
-          <div class="contact-card-icon">📱</div>
-          <div class="contact-card-label">Téléphone</div>
-          <div class="contact-card-value">+228 98 54 50 20</div>
-        </a>
-        <a href="tel:+22871421695" class="contact-card">
-          <div class="contact-card-icon">📞</div>
-          <div class="contact-card-label">Téléphone 2</div>
-          <div class="contact-card-value">+228 71 42 16 95</div>
-        </a>
-        <div class="contact-card">
-          <div class="contact-card-icon">📍</div>
-          <div class="contact-card-label">Localisation</div>
-          <div class="contact-card-value">Lomé, Togo</div>
-        </div>
+  <div class="si">
+    <div class="cc-wrap">
+      <div class="chip" style="margin:0 auto 1rem;display:inline-flex">Contact</div>
+      <h2 class="st">Travaillons ensemble</h2>
+      <p class="ss" style="margin:0 auto 0.5rem;text-align:center">Vous avez un projet web, une application, un ERP ou une solution SIG à développer ? Je suis disponible.</p>
+      <div class="cc-grid">
+        <a href="mailto:carpus.n@hitech-services.com" class="cc"><div class="cc-ico">📧</div><div class="cc-lbl">Email professionnel</div><div class="cc-val">carpus.n@hitech-services.com</div></a>
+        <a href="tel:+22898545020" class="cc"><div class="cc-ico">📱</div><div class="cc-lbl">Téléphone</div><div class="cc-val">+228 98 54 50 20</div></a>
+        <a href="tel:+22871421695" class="cc"><div class="cc-ico">📞</div><div class="cc-lbl">Téléphone 2</div><div class="cc-val">+228 71 42 16 95</div></a>
+        <div class="cc"><div class="cc-ico">📍</div><div class="cc-lbl">Localisation</div><div class="cc-val">Lomé, Togo 🇹🇬</div></div>
       </div>
-      <a href="mailto:carpus.n@hitech-services.com" class="btn btn-primary" style="font-size:1rem;padding:0.85rem 2.5rem">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <a href="mailto:carpus.n@hitech-services.com" class="btn btn-blue" style="font-size:0.925rem;padding:0.82rem 2.25rem">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Envoyer un message
       </a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <p>Conçu & développé par <strong>Carpus Jospin NGANZE</strong> — Lomé, Togo &nbsp;🇹🇬</p>
-  <p style="margin-top:0.5rem;font-size:0.75rem">Développeur Full Stack &nbsp;·&nbsp; carpus.n@hitech-services.com</p>
+  <div class="fl">Conçu par <strong>Carpus Jospin NGANZE</strong> — Développeur Full Stack · Lomé, Togo 🇹🇬</div>
+  <div class="fr">
+    <a href="https://github.com/DevepProd/carpus-portfolio" class="flink" title="GitHub">GH</a>
+    <a href="mailto:carpus.n@hitech-services.com" class="flink" title="Email">@</a>
+  </div>
 </footer>
 
 <script>
-  /* ── Typing effect ── */
-  const words = ['Full Stack', 'React / PHP', 'ERP & CRM', 'SIG & ArcGIS', 'Back-End'];
-  let wi = 0, ci = 0, del = false;
-  const el = document.getElementById('typedText');
-  function type() {
-    const w = words[wi];
-    el.textContent = del ? w.slice(0, ci--) : w.slice(0, ci++);
-    if (!del && ci > w.length) { del = true; setTimeout(type, 1400); return; }
-    if (del && ci < 0) { del = false; wi = (wi + 1) % words.length; ci = 0; }
-    setTimeout(type, del ? 55 : 90);
-  }
-  type();
+/* typing */
+const words=['Full Stack','React / PHP','ERP & Odoo','SIG & ArcGIS','Back-End'];
+let wi=0,ci=0,del=false;
+const el=document.getElementById('typed');
+function type(){const w=words[wi];el.textContent=del?w.slice(0,ci--):w.slice(0,ci++);if(!del&&ci>w.length){del=true;setTimeout(type,1500);return}if(del&&ci<0){del=false;wi=(wi+1)%words.length;ci=0}setTimeout(type,del?50:95)}
+type();
 
-  /* ── Scroll reveal ── */
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+/* reveal */
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');obs.unobserve(x.target)}})},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-  /* ── Nav active ── */
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let cur = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === `#${cur}` ? 'var(--accent)' : '';
-    });
-  }, { passive: true });
+/* experience tabs */
+document.querySelectorAll('.en-item').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const i=b.dataset.e;
+    document.querySelectorAll('.en-item').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.ec').forEach(x=>x.classList.remove('on'));
+    b.classList.add('active');
+    document.querySelector(`.ec[data-e="${i}"]`).classList.add('on');
+  });
+});
 
-  /* ── Hamburger ── */
-  const ham = document.getElementById('hamburger');
-  const nav = document.getElementById('navLinks');
-  ham.addEventListener('click', () => nav.classList.toggle('open'));
-  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+/* nav active */
+const secs=document.querySelectorAll('section[id]');
+const nls=document.querySelectorAll('.nav-links a:not(.nav-cta)');
+window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-120)c=s.id});nls.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+c)})},{passive:true});
+
+/* hamburger */
+const ham=document.getElementById('ham');
+const nav=document.getElementById('navLinks');
+ham.addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
 </script>
 </body>
 </html>
